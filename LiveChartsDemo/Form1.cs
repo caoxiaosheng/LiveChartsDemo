@@ -14,28 +14,33 @@ namespace LiveChartsDemo
         public Form1()
         {
             InitializeComponent();
-            //先定义好默认X、Y轴样式,避免多Y轴时问题
+            //先定义好默认Y轴样式,避免多Y轴时问题
             myChart.AxisY.Add(new Axis()
             {
                 Foreground = Brushes.Black,
                 Title = ckb_BigPoint.Text,
                 Position = AxisPosition.LeftBottom
             });
+            myChart.AxisX.Clear();
             myChart.AxisX.Add(new Axis
             {
-                LabelFormatter = value =>
-                {
-                    long tick = (long)(value * TimeSpan.FromHours(1).Ticks);
-                    if (tick > DateTime.MinValue.Ticks && tick < DateTime.MaxValue.Ticks)
-                    {
-                        return new System.DateTime(tick).ToString("yyyy-MM-dd hh");
-                    }
-                    else
-                    {
-                        return DateTime.Now.ToString("yyyy-MM-dd hh");
-                    }
-                }
+                Foreground = Brushes.Black,
+                LabelFormatter = val => new System.DateTime((long)val).ToString("yyyy-MM-dd hh")
+                //LabelFormatter = value =>
+                //{
+                //    long tick = (long)(value * TimeSpan.FromHours(1).Ticks);
+                //    if (tick > DateTime.MinValue.Ticks && tick < DateTime.MaxValue.Ticks)
+                //    {
+                //        return new System.DateTime(tick).ToString("yyyy-MM-dd hh");
+                //    }
+                //    else
+                //    {
+                //        return DateTime.Now.ToString("yyyy-MM-dd hh");
+                //    }
+                //}
             });
+            //开启缩放
+            myChart.Zoom=ZoomingOptions.X;
         }
 
         private readonly Random random = new Random();
@@ -82,7 +87,7 @@ namespace LiveChartsDemo
         private  List<DateTime> CreateDateTime()
         {
             List<DateTime> dateTimes=new List<DateTime>();
-            for (int i = 0; i < 500; i++)
+            for (int i = 0; i < 100; i++)
             {
                 dateTimes.Add(DateTime.Now.AddMonths(i).AddDays(random.Next(20)));
             }
@@ -96,13 +101,15 @@ namespace LiveChartsDemo
             {
                 var chartValues = new ChartValues<DateTimePoint>();
                 chartValues.AddRange(CreateBigPoint());
-                BigLineSeries = new LineSeries { Values = chartValues, ScalesYAt = 0 };
+                BigLineSeries = new LineSeries { Values = chartValues,Stroke = Brushes.Black,Fill = Brushes.Transparent, ScalesYAt = 0 };
                 myChart.Series.Add(BigLineSeries);
+               
             }
             else
             {
                 myChart.Series.Remove(BigLineSeries);
             }
+            myChart.Invalidate();
         }
 
         private void ckb_SmallPoint_CheckedChanged(object sender, EventArgs e)
@@ -111,7 +118,7 @@ namespace LiveChartsDemo
             {
                 var chartValues = new ChartValues<DateTimePoint>();
                 chartValues.AddRange(CreateSmallPoint());
-                SmallLineSeries = new LineSeries { Values = chartValues, ScalesYAt =1 };
+                SmallLineSeries = new LineSeries { Values = chartValues, Stroke = Brushes.BlueViolet, Fill = Brushes.Transparent, ScalesYAt =1 };
                 myChart.Series.Add(SmallLineSeries);
                 SmallAxis= new Axis() { Foreground = Brushes.BlueViolet, Title = ckb_SmallPoint.Text,Position = AxisPosition.RightTop};
                 myChart.AxisY.Add(SmallAxis);
@@ -136,7 +143,15 @@ namespace LiveChartsDemo
                 myChart.DrawToBitmap(bitmap, new Rectangle(0, 0, myChart.Width, myChart.Height));
                 bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Png);
             }
-        } 
+        }
+        #endregion
+
+        #region 取消缩放
+        private void btn_CancelZoom_Click(object sender, EventArgs e)
+        {
+            myChart.AxisX[0].MinValue = double.NaN;
+            myChart.AxisX[0].MaxValue = double.NaN;
+        }
         #endregion
     }
 

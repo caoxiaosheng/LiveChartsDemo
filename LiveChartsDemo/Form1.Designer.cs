@@ -33,6 +33,7 @@
             this.ckb_SmallPoint = new System.Windows.Forms.CheckBox();
             this.btn_OutPutPng = new System.Windows.Forms.Button();
             this.myChart = new LiveCharts.WinForms.CartesianChart();
+            this.btn_CancelZoom = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // ckb_BigPoint
@@ -83,11 +84,22 @@
             this.myChart.TabIndex = 4;
             this.myChart.Text = "cartesianChart1";
             // 
+            // btn_CancelZoom
+            // 
+            this.btn_CancelZoom.Location = new System.Drawing.Point(676, 223);
+            this.btn_CancelZoom.Name = "btn_CancelZoom";
+            this.btn_CancelZoom.Size = new System.Drawing.Size(75, 23);
+            this.btn_CancelZoom.TabIndex = 5;
+            this.btn_CancelZoom.Text = "取消缩放";
+            this.btn_CancelZoom.UseVisualStyleBackColor = true;
+            this.btn_CancelZoom.Click += new System.EventHandler(this.btn_CancelZoom_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(797, 425);
+            this.Controls.Add(this.btn_CancelZoom);
             this.Controls.Add(this.myChart);
             this.Controls.Add(this.btn_OutPutPng);
             this.Controls.Add(this.ckb_SmallPoint);
@@ -105,6 +117,7 @@
         private System.Windows.Forms.CheckBox ckb_SmallPoint;
         private System.Windows.Forms.Button btn_OutPutPng;
         private LiveCharts.WinForms.CartesianChart myChart;
+        private System.Windows.Forms.Button btn_CancelZoom;
     }
 }
 
