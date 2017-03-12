@@ -29,27 +29,11 @@
         private void InitializeComponent()
         {
             System.Windows.Media.SolidColorBrush solidColorBrush1 = new System.Windows.Media.SolidColorBrush();
-            this.myChart = new LiveCharts.WinForms.CartesianChart();
             this.ckb_BigPoint = new System.Windows.Forms.CheckBox();
             this.ckb_SmallPoint = new System.Windows.Forms.CheckBox();
+            this.btn_OutPutPng = new System.Windows.Forms.Button();
+            this.myChart = new LiveCharts.WinForms.CartesianChart();
             this.SuspendLayout();
-            // 
-            // myChart
-            // 
-            this.myChart.Dock = System.Windows.Forms.DockStyle.Left;
-            this.myChart.Hoverable = true;
-            this.myChart.Location = new System.Drawing.Point(0, 0);
-            this.myChart.Name = "myChart";
-            solidColorBrush1.Color = System.Windows.Media.Color.FromArgb(((byte)(30)), ((byte)(30)), ((byte)(30)), ((byte)(30)));
-            this.myChart.ScrollBarFill = solidColorBrush1;
-            this.myChart.ScrollHorizontalFrom = 0D;
-            this.myChart.ScrollHorizontalTo = 0D;
-            this.myChart.ScrollMode = LiveCharts.ScrollMode.None;
-            this.myChart.ScrollVerticalFrom = 0D;
-            this.myChart.ScrollVerticalTo = 0D;
-            this.myChart.Size = new System.Drawing.Size(590, 425);
-            this.myChart.TabIndex = 0;
-            this.myChart.Text = "cartesianChart1";
             // 
             // ckb_BigPoint
             // 
@@ -73,14 +57,41 @@
             this.ckb_SmallPoint.UseVisualStyleBackColor = true;
             this.ckb_SmallPoint.CheckedChanged += new System.EventHandler(this.ckb_SmallPoint_CheckedChanged);
             // 
+            // btn_OutPutPng
+            // 
+            this.btn_OutPutPng.Location = new System.Drawing.Point(676, 180);
+            this.btn_OutPutPng.Name = "btn_OutPutPng";
+            this.btn_OutPutPng.Size = new System.Drawing.Size(75, 23);
+            this.btn_OutPutPng.TabIndex = 3;
+            this.btn_OutPutPng.Text = "导出图片";
+            this.btn_OutPutPng.UseVisualStyleBackColor = true;
+            this.btn_OutPutPng.Click += new System.EventHandler(this.btn_OutPutPng_Click);
+            // 
+            // myChart
+            // 
+            this.myChart.Hoverable = true;
+            this.myChart.Location = new System.Drawing.Point(12, 20);
+            this.myChart.Name = "myChart";
+            solidColorBrush1.Color = System.Windows.Media.Color.FromArgb(((byte)(30)), ((byte)(30)), ((byte)(30)), ((byte)(30)));
+            this.myChart.ScrollBarFill = solidColorBrush1;
+            this.myChart.ScrollHorizontalFrom = 0D;
+            this.myChart.ScrollHorizontalTo = 0D;
+            this.myChart.ScrollMode = LiveCharts.ScrollMode.None;
+            this.myChart.ScrollVerticalFrom = 0D;
+            this.myChart.ScrollVerticalTo = 0D;
+            this.myChart.Size = new System.Drawing.Size(643, 399);
+            this.myChart.TabIndex = 4;
+            this.myChart.Text = "cartesianChart1";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(797, 425);
+            this.Controls.Add(this.myChart);
+            this.Controls.Add(this.btn_OutPutPng);
             this.Controls.Add(this.ckb_SmallPoint);
             this.Controls.Add(this.ckb_BigPoint);
-            this.Controls.Add(this.myChart);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -90,10 +101,10 @@
         }
 
         #endregion
-
-        private LiveCharts.WinForms.CartesianChart myChart;
         private System.Windows.Forms.CheckBox ckb_BigPoint;
         private System.Windows.Forms.CheckBox ckb_SmallPoint;
+        private System.Windows.Forms.Button btn_OutPutPng;
+        private LiveCharts.WinForms.CartesianChart myChart;
     }
 }
 
