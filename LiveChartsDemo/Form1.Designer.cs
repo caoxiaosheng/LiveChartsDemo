@@ -34,6 +34,8 @@
             this.btn_OutPutPng = new System.Windows.Forms.Button();
             this.myChart = new LiveCharts.WinForms.CartesianChart();
             this.btn_CancelZoom = new System.Windows.Forms.Button();
+            this.btn_Refresh = new System.Windows.Forms.Button();
+            this.cbx_MultiAxis = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // ckb_BigPoint
@@ -94,11 +96,34 @@
             this.btn_CancelZoom.UseVisualStyleBackColor = true;
             this.btn_CancelZoom.Click += new System.EventHandler(this.btn_CancelZoom_Click);
             // 
+            // btn_Refresh
+            // 
+            this.btn_Refresh.Location = new System.Drawing.Point(676, 139);
+            this.btn_Refresh.Name = "btn_Refresh";
+            this.btn_Refresh.Size = new System.Drawing.Size(75, 23);
+            this.btn_Refresh.TabIndex = 6;
+            this.btn_Refresh.Text = "刷新";
+            this.btn_Refresh.UseVisualStyleBackColor = true;
+            this.btn_Refresh.Click += new System.EventHandler(this.btn_Refresh_Click);
+            // 
+            // cbx_MultiAxis
+            // 
+            this.cbx_MultiAxis.AutoSize = true;
+            this.cbx_MultiAxis.Location = new System.Drawing.Point(676, 29);
+            this.cbx_MultiAxis.Name = "cbx_MultiAxis";
+            this.cbx_MultiAxis.Size = new System.Drawing.Size(84, 16);
+            this.cbx_MultiAxis.TabIndex = 7;
+            this.cbx_MultiAxis.Text = "坐标轴分离";
+            this.cbx_MultiAxis.UseVisualStyleBackColor = true;
+            this.cbx_MultiAxis.CheckedChanged += new System.EventHandler(this.cbx_MultiAxis_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(797, 425);
+            this.Controls.Add(this.cbx_MultiAxis);
+            this.Controls.Add(this.btn_Refresh);
             this.Controls.Add(this.btn_CancelZoom);
             this.Controls.Add(this.myChart);
             this.Controls.Add(this.btn_OutPutPng);
@@ -118,6 +143,8 @@
         private System.Windows.Forms.Button btn_OutPutPng;
         private LiveCharts.WinForms.CartesianChart myChart;
         private System.Windows.Forms.Button btn_CancelZoom;
+        private System.Windows.Forms.Button btn_Refresh;
+        private System.Windows.Forms.CheckBox cbx_MultiAxis;
     }
 }
 

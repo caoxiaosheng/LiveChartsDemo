@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using LiveCharts;
 using LiveCharts.Defaults;
+using LiveCharts.Geared;
+using LiveCharts.Helpers;
 using LiveCharts.Wpf;
 using Brushes = System.Windows.Media.Brushes;
 
@@ -14,31 +17,9 @@ namespace LiveChartsDemo
         public Form1()
         {
             InitializeComponent();
-            //先定义好默认Y轴样式,避免多Y轴时问题
-            myChart.AxisY.Add(new Axis()
-            {
-                Foreground = Brushes.Black,
-                Title = ckb_BigPoint.Text,
-                Position = AxisPosition.LeftBottom
-            });
-            myChart.AxisX.Clear();
-            myChart.AxisX.Add(new Axis
-            {
-                Foreground = Brushes.Black,
-                LabelFormatter = val => new System.DateTime((long)val).ToString("yyyy-MM-dd hh")
-                //LabelFormatter = value =>
-                //{
-                //    long tick = (long)(value * TimeSpan.FromHours(1).Ticks);
-                //    if (tick > DateTime.MinValue.Ticks && tick < DateTime.MaxValue.Ticks)
-                //    {
-                //        return new System.DateTime(tick).ToString("yyyy-MM-dd hh");
-                //    }
-                //    else
-                //    {
-                //        return DateTime.Now.ToString("yyyy-MM-dd hh");
-                //    }
-                //}
-            });
+            DateTimes = CreateDateTime();
+            myChart.DisableAnimations = true;
+            myChart.Hoverable = false;
             //开启缩放
             myChart.Zoom=ZoomingOptions.X;
         }
@@ -47,6 +28,7 @@ namespace LiveChartsDemo
 
         private LineSeries BigLineSeries { get; set; }
         private LineSeries SmallLineSeries { get; set; }
+        private LineSeries NormalLineSeries { get; set; }
         private Axis SmallAxis { get; set; }
         private List<DateTime> DateTimes { get; set; }
 
@@ -56,8 +38,17 @@ namespace LiveChartsDemo
             //    .X(dayModel => (double)dayModel.DateTime.Ticks / TimeSpan.FromHours(1).Ticks)
             //    .Y(dayModel => dayModel.Value);
             //myChart.Series = new SeriesCollection(dayConfig);
-            DateTimes = CreateDateTime();
-            
+            //btn_Refresh_Click(null,null);
+        }
+
+
+        private List<DateTimePoint> CreateNormalPoint()
+        {
+            var a=CreatePoint(500, 600);
+            a[480].Value = double.NaN;
+            a[481].Value = double.NaN;
+            a[483].Value = double.NaN;
+            return a;
         }
 
         private List<DateTimePoint> CreateBigPoint()
@@ -87,7 +78,7 @@ namespace LiveChartsDemo
         private  List<DateTime> CreateDateTime()
         {
             List<DateTime> dateTimes=new List<DateTime>();
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 500; i++)
             {
                 dateTimes.Add(DateTime.Now.AddMonths(i).AddDays(random.Next(20)));
             }
@@ -96,20 +87,25 @@ namespace LiveChartsDemo
 
         private void ckb_BigPoint_CheckedChanged(object sender, EventArgs e)
         {
-            myChart.Refresh();
             if (ckb_BigPoint.Checked)
             {
                 var chartValues = new ChartValues<DateTimePoint>();
                 chartValues.AddRange(CreateBigPoint());
-                BigLineSeries = new LineSeries { Values = chartValues,Stroke = Brushes.Black,Fill = Brushes.Transparent, ScalesYAt = 0 };
+                BigLineSeries = new LineSeries {
+                    Values = new ChartValues<DateTimePoint>(CreateBigPoint()),
+                    StrokeThickness = 2,
+                    Fill = Brushes.Transparent,
+                    PointGeometrySize = 4,
+                    DataLabels = false,
+                    Stroke = Brushes.Blue,
+                    Title = "大数据"
+                };
                 myChart.Series.Add(BigLineSeries);
-               
             }
             else
             {
                 myChart.Series.Remove(BigLineSeries);
             }
-            myChart.Invalidate();
         }
 
         private void ckb_SmallPoint_CheckedChanged(object sender, EventArgs e)
@@ -118,15 +114,21 @@ namespace LiveChartsDemo
             {
                 var chartValues = new ChartValues<DateTimePoint>();
                 chartValues.AddRange(CreateSmallPoint());
-                SmallLineSeries = new LineSeries { Values = chartValues, Stroke = Brushes.BlueViolet, Fill = Brushes.Transparent, ScalesYAt =1 };
+                SmallLineSeries = new LineSeries
+                {
+                    Values = new ChartValues<DateTimePoint>(CreateSmallPoint()),
+                    StrokeThickness = 2,
+                    Fill = Brushes.Transparent,
+                    PointGeometrySize = 4,
+                    DataLabels = false,
+                    Stroke = Brushes.Red,
+                    Title = "小数据"
+                };
                 myChart.Series.Add(SmallLineSeries);
-                SmallAxis= new Axis() { Foreground = Brushes.BlueViolet, Title = ckb_SmallPoint.Text,Position = AxisPosition.RightTop};
-                myChart.AxisY.Add(SmallAxis);
             }
             else
             {
                 myChart.Series.Remove(SmallLineSeries);
-                myChart.AxisY.Remove(SmallAxis);
             }
         }
 
@@ -153,6 +155,228 @@ namespace LiveChartsDemo
             myChart.AxisX[0].MaxValue = double.NaN;
         }
         #endregion
+
+        private void btn_Refresh_Click(object sender, EventArgs e)
+        {
+            //var cv = new ChartValues<DateTimePoint>();
+            //cv.AddRange(CreateNormalPoint());
+
+            //NormalLineSeries = new LineSeries
+            //{
+            //    Values = cv,
+            //    StrokeThickness = 2,
+            //    Fill = Brushes.Transparent,
+            //    PointGeometry = null,
+            //    DataLabels = false,
+            //    Stroke = Brushes.Black,
+            //    Title = "基础数据"
+            //};
+
+            //var a = new StepLineSeries()
+            //{
+            //    Values = cv,
+            //    StrokeThickness = 2,
+            //    Fill = Brushes.Transparent,
+            //    PointGeometry = null,
+            //    DataLabels = false,
+            //    Stroke = Brushes.Black,
+            //    Title = "基础数据"
+            //};
+            //myChart.Series = new SeriesCollection { a };
+            MyChartViewModel viewModel = new MyChartViewModel();
+            myChart.Series = viewModel.Series;
+
+            //var axisY = myChart.AxisY.FirstOrDefault();
+            //if (axisY != null)
+            //{
+            //    axisY.Foreground = Brushes.Black;
+            //    axisY.Title = "基础数据";
+            //    axisY.Position=AxisPosition.LeftBottom;
+            //}
+            myChart.AxisY.Clear();
+            myChart.AxisY.Add(new Axis
+            {
+                Foreground = Brushes.Black,
+                Title = "基础数据",
+                Position = AxisPosition.LeftBottom
+            });
+            myChart.AxisX.Clear();
+            myChart.AxisX.Add(new Axis
+            {
+                Foreground = Brushes.Black,
+                LabelFormatter = val =>
+                {
+                    //必须判断是否在正常日期范围内，否则报错
+                    if (val < DateTime.MinValue.Ticks)
+                    {
+                        return DateTime.MinValue.ToString("yyyy/MM/dd hh:mm");
+                    }
+                    else if (val > DateTime.MaxValue.Ticks)
+                    {
+                        return DateTime.MaxValue.ToString("yyyy/MM/dd hh:mm");
+                    }
+                    else
+                    {
+                        return new DateTime((long)val).ToString("yyyy/MM/dd hh:mm");
+                    }
+                }
+            });
+        }
+
+        private void cbx_MultiAxis_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbx_MultiAxis.Checked)
+            {
+                for (int i = 1; i < myChart.Series.Count; i++)
+                {
+                    LineSeries lineSeries= (LineSeries)myChart.Series[i];
+                    myChart.AxisY.Add(new Axis(){Title = lineSeries.Title,Foreground = lineSeries.Stroke,Position = AxisPosition.RightTop});
+                    lineSeries.ScalesYAt = i;
+                }
+            }
+            else
+            {
+                //必须先重置series，否则删除axis报错
+                for (int i = 1; i < myChart.Series.Count; i++)
+                {
+                    LineSeries lineSeries = (LineSeries)myChart.Series[i];
+                    lineSeries.ScalesYAt = 0;
+                }
+                int count = myChart.AxisY.Count;
+                for (int i = count - 1; i > 0; i--)
+                {
+                    myChart.AxisY.RemoveAt(i);
+                }
+            }
+        }
+    }
+
+    public class MyChartViewModel
+    {
+        public MyChartViewModel()
+        {
+            //Series = new SeriesCollection();
+            //Random random=new Random();
+            //List<DateTime> dateTimes = new List<DateTime>();
+            //for (int i = 0; i < 1000; i++)
+            //{
+            //    dateTimes.Add(DateTime.Now.AddMonths(i).AddDays(random.Next(20)));
+            //}
+            //var points=new DateTimePoint[500];
+            //for (int i = 0; i < 500; i++)
+            //{
+            //    points[i]=new DateTimePoint(dateTimes[i],random.Next(0, 10));
+            //}
+            //var cv = new ChartValues<DateTimePoint>();
+            //cv.AddRange(points);
+            //var series = new LineSeries
+            //{
+            //    Values = cv,
+            //    StrokeThickness = 2,
+            //    Fill = Brushes.Transparent,
+            //    PointGeometry = null,
+            //    DataLabels = false,
+            //    Stroke = Brushes.Black,
+            //    Title = "基础数据"
+            //};
+            //Series.Add(series);
+            //for (int i = 0; i < 500; i++)
+            //{
+            //    points[i] = new DateTimePoint(dateTimes[i], random.Next(0, 10));
+            //}
+            //var cv2 = new ChartValues<DateTimePoint>();
+            //cv2.AddRange(points);
+            //var series2 = new LineSeries
+            //{
+            //    Values = cv2,
+            //    StrokeThickness = 2,
+            //    Fill = Brushes.Transparent,
+            //    PointGeometry = null,
+            //    DataLabels = false,
+            //    Stroke = Brushes.Red,
+            //    Title = "基础数据"
+            //};
+            //Series.Add(series2);
+            //for (int i = 0; i < 500; i++)
+            //{
+            //    points[i] = new DateTimePoint(dateTimes[i], random.Next(0, 10));
+            //}
+            //var cv3 = new ChartValues<DateTimePoint>();
+            //cv3.AddRange(points);
+            //var series3 = new LineSeries
+            //{
+            //    Values = cv3,
+            //    StrokeThickness = 2,
+            //    Fill = Brushes.Transparent,
+            //    PointGeometry = null,
+            //    DataLabels = false,
+            //    Stroke = Brushes.Aqua,
+            //    Title = "基础数据"
+            //};
+            //Series.Add(series3);
+
+            Series = new SeriesCollection();
+            Random random = new Random();
+            List<DateTime> dateTimes = new List<DateTime>();
+            for (int i = 0; i < 100000; i++)
+            {
+                dateTimes.Add(DateTime.Now.AddDays(i).AddMinutes(random.Next(10)));
+            }
+            var points = new DateTimePoint[100000];
+            for (int i = 0; i < 100000; i++)
+            {
+                points[i] = new DateTimePoint(dateTimes[i], random.Next(0, 10));
+            }
+            var cv = new GearedValues<DateTimePoint>();
+            cv.AddRange(points);
+            var series = new GLineSeries
+            {
+                Values = cv,
+                StrokeThickness = 2,
+                Fill = Brushes.Transparent,
+                PointGeometry = null,
+                DataLabels = false,
+                Stroke = Brushes.Black,
+                Title = "基础数据"
+            };
+            Series.Add(series);
+            for (int i = 0; i < 100000; i++)
+            {
+                points[i] = new DateTimePoint(dateTimes[i], random.Next(20, 40));
+            }
+            var cv2 = new GearedValues<DateTimePoint>();
+            cv2.AddRange(points);
+            var series2 = new GLineSeries
+            {
+                Values = cv2,
+                StrokeThickness = 2,
+                Fill = Brushes.Transparent,
+                PointGeometry = null,
+                DataLabels = false,
+                Stroke = Brushes.Red,
+                Title = "基础数据"
+            };
+            Series.Add(series2);
+            for (int i = 0; i < 100000; i++)
+            {
+                points[i] = new DateTimePoint(dateTimes[i], random.Next(10, 100));
+            }
+            var cv3 = new GearedValues<DateTimePoint>();
+            cv3.AddRange(points);
+            var series3 = new GLineSeries
+            {
+                Values = cv3,
+                StrokeThickness = 2,
+                Fill = Brushes.Transparent,
+                PointGeometry = null,
+                DataLabels = false,
+                Stroke = Brushes.Aqua,
+                Title = "基础数据"
+            };
+            Series.Add(series3);
+        }
+
+        public SeriesCollection Series { get;}
     }
 
     //public class DateModel
