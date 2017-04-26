@@ -322,8 +322,8 @@ namespace LiveChartsDemo
             {
                 dateTimes.Add(DateTime.Now.AddDays(i).AddMinutes(random.Next(10)));
             }
-            var points = new DateTimePoint[100000];
-            for (int i = 0; i < 100000; i++)
+            var points = new DateTimePoint[10000];
+            for (int i = 0; i < 10000; i++)
             {
                 points[i] = new DateTimePoint(dateTimes[i], random.Next(0, 10));
             }
@@ -340,7 +340,7 @@ namespace LiveChartsDemo
                 Title = "基础数据"
             };
             Series.Add(series);
-            for (int i = 0; i < 100000; i++)
+            for (int i = 0; i < 10000; i++)
             {
                 points[i] = new DateTimePoint(dateTimes[i], random.Next(20, 40));
             }
@@ -357,7 +357,7 @@ namespace LiveChartsDemo
                 Title = "基础数据"
             };
             Series.Add(series2);
-            for (int i = 0; i < 100000; i++)
+            for (int i = 0; i < 10000; i++)
             {
                 points[i] = new DateTimePoint(dateTimes[i], random.Next(10, 100));
             }
